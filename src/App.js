@@ -2,36 +2,44 @@ import React, { useState } from 'react';
 import './App.css';
 
 function App() {
-  const [users, setUsers] = useState([]);
+  const [mobile, setMobile] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const fetchUsers = async () => {
-    try {
-      const response = await fetch('https://reqres.in/api/users/');
-      const { data } = await response.json();
-      setUsers(data);
-    } catch (error) {
-      console.error(error);
-    }
+  const handleMobileChange = (event) => {
+    setMobile(event.target.value);
   };
 
-  const renderUserCards = () => {
-    return users.map((user) => {
-      return (
-        <div key={user.id} className="user-card">
-          <img src={user.avatar} alt={`${user.first_name} ${user.last_name}`} />
-          <h2>{`${user.first_name} ${user.last_name}`}</h2>
-          <p>{user.email}</p>
-          <p>ID: {user.id}</p>
-        </div>
-      );
-    });
+  const handleGenerateOTP = async () => {
+    try {
+      const response = await fetch('https://cdn-api.co-vin.in/api/v2/auth/public/generateOTP', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ mobile: parseInt(mobile) }),
+      });
+
+      if (!response.ok) {
+        const { error } = await response.json();
+        setErrorMessage(error);
+        return;
+      }
+
+      setErrorMessage('');
+      setMobile('');
+    } catch (error) {
+      console.error(error);
+      setErrorMessage('An error occurred while generating OTP.');
+    }
   };
 
   return (
     <div className="App">
-      <h1>User Cards</h1>
-      <button onClick={fetchUsers}>Get Users</button>
-      <div className="user-cards">{renderUserCards()}</div>
+      <h1>Generate OTP</h1>
+      <p>Enter your 10-digit mobile number:</p>
+      <input type="tel" value={mobile} onChange={handleMobileChange} pattern="[0-9]{10}" required />
+      <button onClick={handleGenerateOTP}>Generate OTP</button>
+      {errorMessage && <p className="error">{errorMessage}</p>}
     </div>
   );
 }
