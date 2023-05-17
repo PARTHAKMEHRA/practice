@@ -2,25 +2,25 @@ import logo from '../../logo.svg';
 import styles from './header.module.css';
 import { useNavigate } from 'react-router';
 
-export default function Header(){
+export default function Header() {
     const navigate = useNavigate();
 
-    function handleLogin(){
+    function handleLogin() {
         navigate('/login');
     }
 
-    function handleSignUp(){
+    function handleSignUp() {
         navigate('/signup');
     }
 
-    function handleAbout(){
+    function handleAbout() {
         navigate('/about');
     }
 
     return (
         <div className={styles.navbar}>
             <div className={styles.logo}>
-                <img src={logo} alt="react logo"/>
+                <img src={logo} alt="react logo" />
             </div>
             <div className={styles.list}>
                 <ul>
